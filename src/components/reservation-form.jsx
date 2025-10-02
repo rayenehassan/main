@@ -28,7 +28,7 @@ export function ReservationForm() {
 
     if (!formState.fullName.trim() || !formState.email.trim()) {
       setStatus('error');
-      setMessage('Merci de renseigner votre nom et votre email.');
+      setMessage('Merci d&apos;indiquer au minimum votre nom et votre email professionnel.');
       return;
     }
 
@@ -51,17 +51,17 @@ export function ReservationForm() {
 
       setFormState(initialState);
       setStatus('success');
-      setMessage('Demande enregistree. Notre equipe vous recontacte tres vite.');
+      setMessage('Merci. Notre equipe revient vers vous sous 24h ouvrables.');
     } catch (err) {
       console.error('Unable to create reservation', err);
       const supabaseMessage = err?.message || err?.error?.message;
-      let feedback = 'Une erreur est survenue. Merci de reessayer ou de nous contacter directement.';
+      let feedback = "Nous n&apos;avons pas pu valider votre demande. Merci de reessayer ou d&apos;ecrire a concierge@atelier-l7.com.";
 
       if (typeof supabaseMessage === 'string' && supabaseMessage.length > 0) {
         if (supabaseMessage.toLowerCase().includes('row-level security')) {
-          feedback = "Acces refuse par Supabase (RLS). Verifiez la politique d'insertion pour l'utilisateur anon.";
+          feedback = "Acces refuse par Supabase (RLS). Verifiez la politique d&apos;insertion pour l&apos;utilisateur anon.";
         } else if (supabaseMessage.toLowerCase().includes('duplicate key value')) {
-          feedback = "Votre email semble deja inscrit. Contactez-nous pour ajuster votre demande.";
+          feedback = 'Votre adresse email est deja enregistree. Notre equipe vous recontactera directement.';
         } else {
           feedback = supabaseMessage;
         }
@@ -76,57 +76,57 @@ export function ReservationForm() {
 
   return (
     <form
-      className="space-y-8 rounded-[28px] border border-slate-100 bg-white/90 px-8 py-10 shadow-[0_24px_60px_rgba(15,23,42,0.06)] backdrop-blur"
+      className="space-y-8 rounded-[28px] border border-slate-200 bg-white px-8 py-10 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur"
       onSubmit={handleSubmit}
     >
       <div className="space-y-3">
-        <p className="text-sm uppercase tracking-[0.3em] text-slate-400">Reservation privee</p>
+        <p className="text-sm uppercase tracking-[0.3em] text-slate-500">Brief de reservation</p>
         <h3 className="text-3xl font-semibold tracking-tight text-slate-900">
-          Rejoindre la waiting list Atelier L7
+          Planifier une session privee Atelier L7
         </h3>
-        <p className="text-base text-slate-500">
-          Indiquez-nous vos informations essentielles pour planifier votre rendez-vous dedie. Nous revenons vers vous sous 24h ouvrees.
+        <p className="text-sm leading-relaxed text-slate-600">
+          Transmettez les informations essentielles. Nous preparons un dossier de recommandations avant la session pour optimiser le temps de decision.
         </p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
         <div className="flex flex-col gap-2">
-          <label className="text-xs uppercase tracking-[0.3em] text-slate-400" htmlFor="fullName">
+          <label className="text-xs uppercase tracking-[0.3em] text-slate-500" htmlFor="fullName">
             Nom complet
           </label>
           <input
             autoComplete="name"
-            className="rounded-2xl border border-slate-200 bg-white px-5 py-4 text-sm text-slate-800 outline-none transition focus:border-slate-400 focus:ring-0"
+            className="rounded-2xl border border-slate-300 bg-white px-5 py-4 text-sm text-slate-800 outline-none transition focus:border-slate-500 focus:ring-0"
             disabled={isLoading}
             id="fullName"
             onChange={handleChange('fullName')}
-            placeholder="Alexandre Dupont"
+            placeholder="Claire Martin"
             value={formState.fullName}
           />
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="text-xs uppercase tracking-[0.3em] text-slate-400" htmlFor="email">
+          <label className="text-xs uppercase tracking-[0.3em] text-slate-500" htmlFor="email">
             Email professionnel
           </label>
           <input
             autoComplete="email"
-            className="rounded-2xl border border-slate-200 bg-white px-5 py-4 text-sm text-slate-800 outline-none transition focus:border-slate-400 focus:ring-0"
+            className="rounded-2xl border border-slate-300 bg-white px-5 py-4 text-sm text-slate-800 outline-none transition focus:border-slate-500 focus:ring-0"
             disabled={isLoading}
             id="email"
             onChange={handleChange('email')}
-            placeholder="a.dupont@exemple.com"
+            placeholder="c.martin@entreprise.com"
             type="email"
             value={formState.email}
           />
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="text-xs uppercase tracking-[0.3em] text-slate-400" htmlFor="preferredModel">
-            Modele souhaite
+          <label className="text-xs uppercase tracking-[0.3em] text-slate-500" htmlFor="preferredModel">
+            Modele envisage
           </label>
           <select
-            className="rounded-2xl border border-slate-200 bg-white px-5 py-4 text-sm text-slate-800 outline-none transition focus:border-slate-400 focus:ring-0"
+            className="rounded-2xl border border-slate-300 bg-white px-5 py-4 text-sm text-slate-800 outline-none transition focus:border-slate-500 focus:ring-0"
             disabled={isLoading}
             id="preferredModel"
             onChange={handleChange('preferredModel')}
@@ -136,49 +136,49 @@ export function ReservationForm() {
             <option value="Edition Signature">Edition Signature</option>
             <option value="L7 Atlantique">L7 Atlantique</option>
             <option value="L7 Nocturne">L7 Nocturne</option>
-            <option value="Consultation">Je souhaite un conseil personnalise</option>
+            <option value="Consultation">Etudier plusieurs scenarios</option>
           </select>
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="text-xs uppercase tracking-[0.3em] text-slate-400" htmlFor="timeframe">
-            Fenetre ideale
+          <label className="text-xs uppercase tracking-[0.3em] text-slate-500" htmlFor="timeframe">
+            Horizon de mise en service
           </label>
           <input
-            className="rounded-2xl border border-slate-200 bg-white px-5 py-4 text-sm text-slate-800 outline-none transition focus:border-slate-400 focus:ring-0"
+            className="rounded-2xl border border-slate-300 bg-white px-5 py-4 text-sm text-slate-800 outline-none transition focus:border-slate-500 focus:ring-0"
             disabled={isLoading}
             id="timeframe"
             onChange={handleChange('timeframe')}
-            placeholder="Par ex. Octobre 2025"
+            placeholder="Ex: debut T1 2026"
             value={formState.timeframe}
           />
         </div>
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-xs uppercase tracking-[0.3em] text-slate-400" htmlFor="notes">
-          Attentes particulieres
+        <label className="text-xs uppercase tracking-[0.3em] text-slate-500" htmlFor="notes">
+          Priorites et contexte
         </label>
         <textarea
-          className="min-h-[120px] rounded-2xl border border-slate-200 bg-white px-5 py-4 text-sm text-slate-800 outline-none transition focus:border-slate-400 focus:ring-0"
+          className="min-h-[140px] rounded-2xl border border-slate-300 bg-white px-5 py-4 text-sm text-slate-800 outline-none transition focus:border-slate-500 focus:ring-0"
           disabled={isLoading}
           id="notes"
           onChange={handleChange('notes')}
-          placeholder="Precisez vos besoins, le type de trajet, vos inspirations..."
+          placeholder="Objectifs, profils passagers, contraintes logistiques..."
           value={formState.notes}
         />
       </div>
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs uppercase tracking-[0.25em] text-slate-400">
-          Donnees traitees de maniere confidentielle
+        <p className="text-xs uppercase tracking-[0.25em] text-slate-500">
+          Donnees traitees sous NDA et supprimees sur demande
         </p>
         <button
           className="inline-flex items-center justify-center rounded-full bg-slate-900 px-8 py-3 text-sm font-medium text-white transition hover:-translate-y-[2px] hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
           disabled={isLoading}
           type="submit"
         >
-          {isLoading ? 'Envoi en cours...' : 'Reserver un creneau'}
+          {isLoading ? 'Envoi en cours...' : 'Confirmer ma demande'}
         </button>
       </div>
 
@@ -186,8 +186,8 @@ export function ReservationForm() {
         <div
           className={
             status === 'success'
-              ? 'rounded-2xl border border-emerald-200 bg-emerald-50/60 px-6 py-4 text-sm text-emerald-700'
-              : 'rounded-2xl border border-rose-200 bg-rose-50/60 px-6 py-4 text-sm text-rose-700'
+              ? 'rounded-2xl border border-emerald-200 bg-emerald-50/70 px-6 py-4 text-sm text-emerald-700'
+              : 'rounded-2xl border border-rose-200 bg-rose-50/70 px-6 py-4 text-sm text-rose-700'
           }
         >
           {message}
@@ -196,8 +196,5 @@ export function ReservationForm() {
     </form>
   );
 }
-
-
-
 
 
