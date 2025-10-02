@@ -6,9 +6,10 @@ import { supabase } from '../lib/supabaseClient';
 const initialState = {
   fullName: '',
   email: '',
-  preferredModel: '',
-  timeframe: '',
-  notes: '',
+  experienceType: '',
+  preferredDates: '',
+  city: '',
+  household: '',
 };
 
 export function ReservationForm() {
@@ -39,9 +40,10 @@ export function ReservationForm() {
       const { error } = await supabase.from('waiting_list').insert({
         full_name: formState.fullName.trim(),
         email: formState.email.trim().toLowerCase(),
-        desired_model: formState.preferredModel || null,
-        preferred_timeframe: formState.timeframe || null,
-        notes: formState.notes || null,
+        experience_type: formState.experienceType || null,
+        preferred_dates: formState.preferredDates || null,
+        city: formState.city || null,
+        household_notes: formState.household || null,
       });
 
       if (error) {
@@ -51,17 +53,17 @@ export function ReservationForm() {
 
       setFormState(initialState);
       setStatus('success');
-      setMessage('Merci. Notre equipe revient vers vous sous 24h ouvrables.');
+      setMessage('Merci. Notre equipe UberDog vous recontacte sous 24h ouvrables.');
     } catch (err) {
       console.error('Unable to create reservation', err);
       const supabaseMessage = err?.message || err?.error?.message;
-      let feedback = "Nous n&apos;avons pas pu valider votre demande. Merci de reessayer ou d&apos;ecrire a concierge@atelier-l7.com.";
+      let feedback = "Nous n&apos;avons pas pu valider votre demande. Merci de reessayer ou d&apos;ecrire a concierge@uberdog.io.";
 
       if (typeof supabaseMessage === 'string' && supabaseMessage.length > 0) {
         if (supabaseMessage.toLowerCase().includes('row-level security')) {
           feedback = "Acces refuse par Supabase (RLS). Verifiez la politique d&apos;insertion pour l&apos;utilisateur anon.";
         } else if (supabaseMessage.toLowerCase().includes('duplicate key value')) {
-          feedback = 'Votre adresse email est deja enregistree. Notre equipe vous recontactera directement.';
+          feedback = 'Votre adresse email est deja enregistree. Notre equipe reprendra contact directement.';
         } else {
           feedback = supabaseMessage;
         }
@@ -82,10 +84,10 @@ export function ReservationForm() {
       <div className="space-y-3">
         <p className="text-sm uppercase tracking-[0.3em] text-slate-500">Brief de reservation</p>
         <h3 className="text-3xl font-semibold tracking-tight text-slate-900">
-          Planifier une session privee Atelier L7
+          Planifier une experience UberDog
         </h3>
         <p className="text-sm leading-relaxed text-slate-600">
-          Transmettez les informations essentielles. Nous preparons un dossier de recommandations avant la session pour optimiser le temps de decision.
+          Indiquez-nous votre contexte. Nous preparons une proposition personnalisee: profil du chien, accompagnant refuge, conditions logistiques et budget transparent.
         </p>
       </div>
 
@@ -100,7 +102,7 @@ export function ReservationForm() {
             disabled={isLoading}
             id="fullName"
             onChange={handleChange('fullName')}
-            placeholder="Claire Martin"
+            placeholder="Camille Durand"
             value={formState.fullName}
           />
         </div>
@@ -115,58 +117,72 @@ export function ReservationForm() {
             disabled={isLoading}
             id="email"
             onChange={handleChange('email')}
-            placeholder="c.martin@entreprise.com"
+            placeholder="c.durand@entreprise.com"
             type="email"
             value={formState.email}
           />
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="text-xs uppercase tracking-[0.3em] text-slate-500" htmlFor="preferredModel">
-            Modele envisage
+          <label className="text-xs uppercase tracking-[0.3em] text-slate-500" htmlFor="experienceType">
+            Experience souhaitee
           </label>
           <select
             className="rounded-2xl border border-slate-300 bg-white px-5 py-4 text-sm text-slate-800 outline-none transition focus:border-slate-500 focus:ring-0"
             disabled={isLoading}
-            id="preferredModel"
-            onChange={handleChange('preferredModel')}
-            value={formState.preferredModel}
+            id="experienceType"
+            onChange={handleChange('experienceType')}
+            value={formState.experienceType}
           >
             <option value="">Selectionner</option>
-            <option value="Edition Signature">Edition Signature</option>
-            <option value="L7 Atlantique">L7 Atlantique</option>
-            <option value="L7 Nocturne">L7 Nocturne</option>
-            <option value="Consultation">Etudier plusieurs scenarios</option>
+            <option value="Balade Executive">Balade Executive</option>
+            <option value="Weekend Immersion">Weekend Immersion</option>
+            <option value="Dog Office Break">Dog Office Break</option>
+            <option value="Programme sur mesure">Programme sur mesure</option>
           </select>
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="text-xs uppercase tracking-[0.3em] text-slate-500" htmlFor="timeframe">
-            Horizon de mise en service
+          <label className="text-xs uppercase tracking-[0.3em] text-slate-500" htmlFor="preferredDates">
+            Fenetre souhaitee
           </label>
           <input
             className="rounded-2xl border border-slate-300 bg-white px-5 py-4 text-sm text-slate-800 outline-none transition focus:border-slate-500 focus:ring-0"
             disabled={isLoading}
-            id="timeframe"
-            onChange={handleChange('timeframe')}
-            placeholder="Ex: debut T1 2026"
-            value={formState.timeframe}
+            id="preferredDates"
+            onChange={handleChange('preferredDates')}
+            placeholder="Ex: 12-14 avril, week-end uniquement"
+            value={formState.preferredDates}
           />
         </div>
-      </div>
 
-      <div className="flex flex-col gap-2">
-        <label className="text-xs uppercase tracking-[0.3em] text-slate-500" htmlFor="notes">
-          Priorites et contexte
-        </label>
-        <textarea
-          className="min-h-[140px] rounded-2xl border border-slate-300 bg-white px-5 py-4 text-sm text-slate-800 outline-none transition focus:border-slate-500 focus:ring-0"
-          disabled={isLoading}
-          id="notes"
-          onChange={handleChange('notes')}
-          placeholder="Objectifs, profils passagers, contraintes logistiques..."
-          value={formState.notes}
-        />
+        <div className="flex flex-col gap-2">
+          <label className="text-xs uppercase tracking-[0.3em] text-slate-500" htmlFor="city">
+            Ville / zone
+          </label>
+          <input
+            className="rounded-2xl border border-slate-300 bg-white px-5 py-4 text-sm text-slate-800 outline-none transition focus:border-slate-500 focus:ring-0"
+            disabled={isLoading}
+            id="city"
+            onChange={handleChange('city')}
+            placeholder="Paris intra-muros"
+            value={formState.city}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label className="text-xs uppercase tracking-[0.3em] text-slate-500" htmlFor="household">
+            Participants & contraintes
+          </label>
+          <input
+            className="rounded-2xl border border-slate-300 bg-white px-5 py-4 text-sm text-slate-800 outline-none transition focus:border-slate-500 focus:ring-0"
+            disabled={isLoading}
+            id="household"
+            onChange={handleChange('household')}
+            placeholder="2 adultes, 1 enfant de 8 ans, appartement 70m2"
+            value={formState.household}
+          />
+        </div>
       </div>
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -196,5 +212,3 @@ export function ReservationForm() {
     </form>
   );
 }
-
-
